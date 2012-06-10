@@ -4,6 +4,8 @@ create table Department
 	name varchar(50) not null
 
 );
+ALTER TABLE Department ADD CONSTRAINT unique_dep_name UNIQUE (name);
+
 
 create table Address
 (
@@ -14,7 +16,6 @@ create table Address
 	[floor] tinyint CONSTRAINT floor_valid CHECK([floor] not like '%[^0-9]%'),
 	postcode varchar(15)
 );
-
 
 create table Employee
 (

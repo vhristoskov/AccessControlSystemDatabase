@@ -1,3 +1,7 @@
+-- =============================================
+-- STORED PROCEDURES
+-- =============================================
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -16,11 +20,22 @@ CREATE PROCEDURE addPlaceToDepartment
 	@placeBuldingFloor tinyint
 AS
 BEGIN
-
+	SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
-	SELECT <@Param1, sysname, @p1>, <@Param2, sysname, @p2>
+	BEGIN TRY
+		BEGIN TRAN T1
+	
+
+
+	END TRY
+	
+	BEGIN CATCH
+	ROLLBACK
+	
+	END CATCH
+	    -- Insert statements for procedure here
+
 END
 GO
 
@@ -90,6 +105,32 @@ BEGIN
 	
 	END CATCH
 END	
+
+
+-- =============================================
+-- STORED FUNCTIONS
+-- =============================================
+
+
+-- =============================================
+-- Author: Victor Hristoskov
+-- Description:	Get departmentID by department name
+-- =============================================
+CREATE FUNCTION getDepartmIDByName
+(
+	@departmName varchar(50)
+)
+RETURNS int
+AS
+BEGIN
+	DECLARE @departmID int
+
+	SET @departmID = (select departmID from Department
+						where name = @departmName)
+
+	RETURN @departmID
+END
+GO
 
 
 

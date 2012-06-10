@@ -11,9 +11,10 @@ create table Address
 	city varchar(30) CONSTRAINT city_valid CHECK (city like '%[^0-9]%') not null,
 	street varchar(40) not null,
 	buildingName varchar(15),
-	[floor] tinyint CONSTRAINT floor_valid CHECK([floor] not like '%[^0-9]%') not null,
-	postcode varchar(15) not null
+	[floor] tinyint CONSTRAINT floor_valid CHECK([floor] not like '%[^0-9]%'),
+	postcode varchar(15)
 );
+
 
 create table Employee
 (
@@ -82,6 +83,15 @@ create table AuditAccess
 	CONSTRAINT enter_exit_valid CHECK(enterTime<exitTime)
 );
 
+-- Create index on code filed of AccessPermission table because we'll often search for
+-- some code and on base of returned results we'll determine is a person with
+-- this code has access to a place
+create index IN_AccessPermission_code on AccessPermission(code);
+
+-- Create index on placeID of Place table and AccessPermission table because we'll
+-- often search is a place is accessible by some code
+create index IN_Place_placeID on Place(placeID);
+create index IN_AccessPermission_placeID on AccessPermission(placeID);
 
 -- Trigger Ideas 
 /*

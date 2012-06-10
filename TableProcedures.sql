@@ -1,44 +1,26 @@
 -- =============================================
--- STORED PROCEDURES
+-- STORED FUNCTIONS
 -- =============================================
 
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
 -- =============================================
 -- Author: Victor Hristoskov
--- Description:	Add a place to a department
+-- Description:	Get departmentID by department name
 -- =============================================
-CREATE PROCEDURE addPlaceToDepartment
-	@deparmentName varchar(50),
-	@placeName varchar(50),
-	@placeCity varchar(30),
-	@placeStreet varchar(40),
-	@placePostcode varchar(15),
-	@placeBuildingName varchar(15),
-	@placeBuldingFloor tinyint
+CREATE FUNCTION getDepartmIDByName
+(
+	@departmName varchar(50)
+)
+RETURNS int
 AS
 BEGIN
-	SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
-	SET NOCOUNT ON;
+	DECLARE @departmID int
 
-	BEGIN TRY
-		BEGIN TRAN T1
-	
+	SET @departmID = (select departmID from Department
+						where name = @departmName)
 
-
-	END TRY
-	
-	BEGIN CATCH
-	ROLLBACK
-	
-	END CATCH
-	    -- Insert statements for procedure here
-
+	RETURN @departmID
 END
 GO
-
 
 -- =============================================
 -- Author: Victor Hristoskov
@@ -46,11 +28,11 @@ GO
 -- if the address exists then only return its ID
 -- =============================================
 
-ALTER PROCEDURE addAddressIfNotExist
+CREATE PROCEDURE addAddressIfNotExist
 	@placeCity varchar(30), 
 	@placeStreet varchar(40),
-	@placePostcode varchar(15) = NULL,
-	@placeBuildingName varchar(15) = NULL ,
+	@placePostcode varchar(15) = '',
+	@placeBuildingName varchar(15) = '' ,
 	@placeBuldingFloor tinyint = 0
 AS
 BEGIN
@@ -99,38 +81,89 @@ BEGIN
 
 	BEGIN CATCH	
 
-	ROLLBACK
-	PRINT 'Something wrong happend'
-	PRINT ERROR_MESSAGE()
-	
+		ROLLBACK
+		PRINT 'Something wrong happend'
+		PRINT ERROR_MESSAGE()
+
 	END CATCH
 END	
+GO
 
 
 -- =============================================
--- STORED FUNCTIONS
+-- STORED PROCEDURES
 -- =============================================
 
-
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
 -- =============================================
 -- Author: Victor Hristoskov
--- Description:	Get departmentID by department name
+-- Description:	Add a place to a department
 -- =============================================
-CREATE FUNCTION getDepartmIDByName
-(
-	@departmName varchar(50)
-)
-RETURNS int
+CREATE PROCEDURE addPlaceToDepartment
+	@deparmentName varchar(50),
+	@placeName varchar(50),
+	@placeCity varchar(30),
+	@placeStreet varchar(40),
+	@placePostcode varchar(15) = '',
+	@placeBuildingName varchar(15) = '',
+	@placeBuldingFloor tinyint = 0
 AS
 BEGIN
-	DECLARE @departmID int
+	SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
 
-	SET @departmID = (select departmID from Department
-						where name = @departmName)
+	DECLARE @departmID int,
+			@addrID int
+	
+	SET NOCOUNT ON;
 
-	RETURN @departmID
+	BEGIN TRY
+		--BEGIN TRAN T1
+		
+		PRINT 'Obtaining the departmarment ID...'		
+		SET @departmID = dbo.getDepartmIDByName(@deparmentName)
+
+		PRINT 'Obtaining place address ID...'
+		EXEC @addrID = [dbo].addAddressIfNotExist
+			@placeCity,
+			@placeStreet,
+			@placePostcode,
+			@placeBuildingName,
+			@placeBuldingFloor 
+
+		PRINT 'Place Addres ID obtained: ' + cast(@addrID as varchar)
+		
+		IF (@departmID > 0) 
+		BEGIN 
+			-- Department exist
+			PRINT 'Department id obtained: ' + cast(@departmID as varchar)
+
+			PRINT 'Inserting place details...'
+			INSERT INTO Place 
+			values (@placeName, @addrID, @departmID)	
+			--COMMIT TRAN T1		
+		END
+
+		ELSE
+		BEGIN 
+
+			PRINT 'Department with that name does not exist!'
+			--COMMIT TRAN T1
+			RETURN 0
+		END
+	END TRY
+	
+	BEGIN CATCH
+		--ROLLBACK
+		PRINT 'Something wrong happend!'
+		PRINT ERROR_MESSAGE()
+	END CATCH
 END
 GO
+
+
 
 
 
@@ -140,3 +173,4 @@ GO
 -- Kogato iskame da vzemem dadeno mqsto trqbva osven imeto mu da
 -- podadem i departamenta, za6toto v 2 razli4ni departamenta moje da ima 
 -- mesta s ednakvi imena
+

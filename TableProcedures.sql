@@ -6,10 +6,10 @@ GO
 -- Author: Victor Hristoskov
 -- Description:	Add a place to a department
 -- =============================================
-CREATE PROCEDURE addPlaceToDepartment 
+CREATE PROCEDURE addPlaceToDepartment
 	@deparmentName varchar(50),
 	@placeName varchar(50),
-	@placeCity varchar(30), 
+	@placeCity varchar(30),
 	@placeStreet varchar(40),
 	@placePostcode varchar(15),
 	@placeBuildingName varchar(15),
@@ -71,12 +71,12 @@ BEGIN
 		BEGIN	
 			-- if the addres doesn't exist then insert it
 			PRINT 'Address not found. Inserting...'
-			
+
 			INSERT INTO Address 
 			values(@placeCity, @placeStreet,
 			 @placeBuildingName, @placeBuldingFloor, @placePostcode)
 			PRINT 'Address is inserted with ID: ' + cast(@@IDENTITY as varchar)
-			
+
 			COMMIT TRAN T1
 			RETURN @@IDENTITY
 		END
@@ -84,7 +84,7 @@ BEGIN
 
 	BEGIN CATCH	
 
-	ROLLBACK	
+	ROLLBACK
 	PRINT 'Something wrong happend'
 	PRINT ERROR_MESSAGE()
 	
@@ -99,4 +99,3 @@ END
 -- Kogato iskame da vzemem dadeno mqsto trqbva osven imeto mu da
 -- podadem i departamenta, za6toto v 2 razli4ni departamenta moje da ima 
 -- mesta s ednakvi imena
-

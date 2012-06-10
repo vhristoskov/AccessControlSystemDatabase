@@ -1,3 +1,9 @@
+create database AccessControlSystem
+go 
+
+use AccessControlSystem
+go
+
 create table Department
 (
 	departmID smallint identity  CONSTRAINT dep_PK PRIMARY KEY,
@@ -107,4 +113,5 @@ create index IN_AccessPermission_placeID on AccessPermission(placeID);
 	- procedure personExit(person, place), which fills 
 	in the exit date and time for a perosn in AuditAccess
 	- we must furst check if the person can access this place
+
 */

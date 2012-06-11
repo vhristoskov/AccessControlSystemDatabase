@@ -164,13 +164,27 @@ END
 GO
 
 
-
-
-
-
--- COMMENTS:
 --========================================================
+-- COMMENTS:
+
 -- Kogato iskame da vzemem dadeno mqsto trqbva osven imeto mu da
 -- podadem i departamenta, za6toto v 2 razli4ni departamenta moje da ima 
 -- mesta s ednakvi imena
+--========================================================
 
+
+
+--========================================================
+-- TODO:
+
+-- addEmployeeToDepartm
+-- addContactToEmpl
+-- addAccessToPlaceForEmpl
+-- getAllAccCodesByEmpl = table valued procedure
+-- table with employees and who when and where is entered = View
+-- get all places that an employee can access =  multy-value Table procedure
+
+-- employeeEntered - affects AuditAccess 
+-- employeeExited - affects AuditAccess
+
+--========================================================

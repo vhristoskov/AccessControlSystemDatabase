@@ -102,8 +102,8 @@ GO
 -- Author: Victor Hristoskov
 -- Description:	Add a place to a department
 -- =============================================
-CREATE PROCEDURE addPlaceToDepartment
-	@deparmentName varchar(50),
+ALTER PROCEDURE addPlaceToDepartment
+	@departmentName varchar(50),
 	@placeName varchar(50),
 	@placeCity varchar(30),
 	@placeStreet varchar(40),
@@ -123,7 +123,7 @@ BEGIN
 		--BEGIN TRAN T1
 		
 		PRINT 'Obtaining the departmarment ID...'		
-		SET @departmID = dbo.getDepartmIDByName(@deparmentName)
+		SET @departmID = dbo.getDepartmIDByName(@departmentName)
 
 		PRINT 'Obtaining place address ID...'
 		EXEC @addrID = [dbo].addAddressIfNotExist
